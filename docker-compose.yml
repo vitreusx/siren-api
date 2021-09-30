@@ -2,6 +2,7 @@ version: "3.9"
 services:
   server:
     build: .
+    restart: always
     ports:
       - "8000:5000"
     volumes:
@@ -17,6 +18,9 @@ services:
         target: /data/db
     ports:
       - "8001:27017"
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=root
+      - MONGO_INITDB_ROOT_PASSWORD=root
     command: --quiet
 volumes:
   db:

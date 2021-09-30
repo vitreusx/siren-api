@@ -19,7 +19,7 @@ def load_user(user_id):
 def status():
     logged_in = current_user.is_authenticated
     username = current_user.username if logged_in else None
-    return {"logged_in": logged_in, "username": username}
+    return {"logged_in": logged_in}
 
 
 @router.route("/register", methods=["POST"])
@@ -28,12 +28,13 @@ def register():
     password = request.form.get("password")
     redirect_uri = request.form.get("redirect")
 
-    try:
+    matching = UserAuth.objects(username=username)
+    if len(matching) > 0:
+        return {"error": "User already exists."}, HTTPStatus.CONFLICT
+    else:
         user = UserAuth.create(username, password)
         user.save()
         return redirect(redirect_uri)
-    except:
-        return {"error": "User already exists."}, HTTPStatus.CONFLICT
 
 
 @router.route("/login", methods=["POST"])
@@ -43,9 +44,9 @@ def login():
     remember = request.form.get("remember")
     redirect_uri = request.form.get("redirect")
 
-    user = UserAuth.objects.get(username=username)
-    if user and user.verify(password):
-        login_user(user, remember=remember)
+    users = UserAuth.objects(username=username)
+    if users and users[0].verify(password):
+        login_user(users[0], remember=remember)
         return redirect(redirect_uri)
     else:
         return {"error": "Wrong credentials."}, HTTPStatus.UNAUTHORIZED

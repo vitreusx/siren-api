@@ -1,4 +1,4 @@
-from flask import Blueprint, request, redirect, session
+from flask import Blueprint, request, redirect, session, current_app
 from flask.helpers import url_for
 from flask_login import current_user
 from flask_login.utils import login_required
@@ -15,15 +15,10 @@ from siren.models.sf_auth import SpotifyAuth
 router = Blueprint("spotify", __name__)
 
 
-@router.route("/token")
+@router.route("/status")
 @login_required
-def token():
-    if current_user.sf_auth:
-        client: Spotify = current_user.sf_auth.client
-        oauth: SpotifyOAuth = client.oauth_manager
-        return {"token": oauth.get_access_token()["access_token"]}
-    else:
-        return {}
+def status():
+    return {"logged_in": current_user.sf_auth is not None}
 
 
 @router.route("/login", methods=["POST"])

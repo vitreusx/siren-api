@@ -3,7 +3,7 @@ from mongoengine import Document
 from mongoengine.fields import StringField, IntField
 from spotipy import Spotify
 from spotipy.oauth2 import CacheHandler, SpotifyClientCredentials, SpotifyOAuth
-from flask import url_for
+from flask import url_for, current_app
 import os
 
 
@@ -44,7 +44,7 @@ class SpotifyAuth(Document):
             redirect_uri=url_for("api.spotify.callback"),
             cache_handler=SpotifyAuthCache(self),
             scope="user-library-read",
-            client_id=os.getenv("SPOTIFY_CLIENT_ID"),
-            client_secret=os.getenv("SPOTIFY_CLIENT_SECRET"),
+            client_id=current_app.config.get("SPOTIFY_CLIENT_ID"),
+            client_secret=current_app.config.get("SPOTIFY_CLIENT_SECRET"),
         )
         return Spotify(oauth_manager=oauth)
