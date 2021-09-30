@@ -12,7 +12,8 @@ RUN adduser -u 5678 --disabled-password --gecos "" appuser &&\
 USER appuser
 
 COPY requirements.txt .
-RUN python -m pip install -r requirements.txt
+RUN pip install -U pip
+RUN pip install -r requirements.txt
 
 ENV PYTHONPATH="${PYTHONPATH}:/app"
 
