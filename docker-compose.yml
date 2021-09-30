@@ -1,0 +1,21 @@
+version: "3.9"
+services:
+  server:
+    build: .
+    ports:
+      - "8000:5000"
+    volumes:
+      - type: bind
+        source: .
+        target: /app
+  db:
+    image: postgres:latest
+    restart: always
+    volumes:
+      - type: volume
+        source: db
+        target: /data/db
+    ports:
+      - "8001:5432"
+volumes:
+  db:
