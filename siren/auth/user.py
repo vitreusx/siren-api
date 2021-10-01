@@ -11,15 +11,8 @@ lm = LoginManager()
 
 
 @lm.user_loader
-def load_user(user_id):
-    return UserAuth.objects.get(id=user_id)
-
-
-@router.route("/status")
-def status():
-    logged_in = current_user.is_authenticated
-    username = current_user.username if logged_in else None
-    return {"logged_in": logged_in}
+def user_loader(id):
+    return UserAuth.objects.get(id=id)
 
 
 @router.route("/register", methods=["POST"])

@@ -13,8 +13,7 @@ class User(ObjectType):
     def resolve_username(parent, info):
         return UserAuth.objects.get(id=parent.get_id()).username
 
-    def resolve_sf_auth_token(parent, info):
-        id = parent.resolve_id(info)
+    def resolve_sf_access_token(parent, info):
         user = UserAuth.objects.get(id=parent.get_id())
         if user.sf_auth:
             return user.sf_auth.access_token

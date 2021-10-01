@@ -15,12 +15,6 @@ from siren.models.sf_auth import SpotifyAuth
 router = Blueprint("spotify", __name__)
 
 
-@router.route("/status")
-@login_required
-def status():
-    return {"logged_in": current_user.sf_auth is not None}
-
-
 @router.route("/login", methods=["POST"])
 @login_required
 def login():
