@@ -1,0 +1,13 @@
+type User {
+  id: ID!
+  username: String!
+  sfAccessToken: String
+}
+
+type Query {
+  me: User
+}
+
+schema {
+  query: Query
+}

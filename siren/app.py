@@ -25,5 +25,6 @@ def create_app() -> Flask:
     db.init_app(app)
     auth.init_app(app)
     app.register_blueprint(auth.router, url_prefix="/auth")
+    app.register_blueprint(graphql.router, url_prefix="/graphql")
 
     return app
