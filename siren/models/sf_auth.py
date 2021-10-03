@@ -1,14 +1,14 @@
 from __future__ import annotations
-from mongoengine import Document
-from mongoengine.fields import StringField, IntField
+from mongoengine import EmbeddedDocument
+from mongoengine.fields import *
 from spotipy import Spotify
-from spotipy.oauth2 import CacheHandler, SpotifyClientCredentials, SpotifyOAuth
+from spotipy.oauth2 import CacheHandler, SpotifyOAuth
 from flask import url_for, current_app
 import os
 
 
-class SpotifyAuthCache(CacheHandler):
-    def __init__(self, sf_auth: SpotifyAuth) -> None:
+class SfAuthCache(CacheHandler):
+    def __init__(self, sf_auth: SfAuth) -> None:
         super().__init__()
         self.sf_auth = sf_auth
 
@@ -23,11 +23,11 @@ class SpotifyAuthCache(CacheHandler):
         self.sf_auth.save()
 
 
-class SpotifyAuth(Document):
-    access_token = StringField()
-    refresh_token = StringField()
-    expires_at = IntField()
-    scope = StringField()
+class SfAuth(EmbeddedDocument):
+    access_token = StringField(required=True)
+    refresh_token = StringField(required=True)
+    expires_at = IntField(required=True)
+    scope = StringField(required=True)
 
     @property
     def token_info(self):
@@ -42,7 +42,7 @@ class SpotifyAuth(Document):
     def client(self):
         oauth = SpotifyOAuth(
             redirect_uri=url_for("api.spotify.callback"),
-            cache_handler=SpotifyAuthCache(self),
+            cache_handler=SfAuthCache(self),
             scope="user-library-read",
             client_id=current_app.config.get("SPOTIFY_CLIENT_ID"),
             client_secret=current_app.config.get("SPOTIFY_CLIENT_SECRET"),

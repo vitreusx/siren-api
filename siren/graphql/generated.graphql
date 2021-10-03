@@ -1,0 +1,114 @@
+"""
+Direct the client to resolve this field locally, either from the cache or local resolvers.
+"""
+directive @client(
+  """
+  When true, the client will never use the cache for this value. See
+  https://www.apollographql.com/docs/react/essentials/local-state/#forcing-resolvers-with-clientalways-true
+  """
+  always: Boolean
+) on FIELD | FRAGMENT_DEFINITION | INLINE_FRAGMENT
+
+"""
+Export this locally resolved field as a variable to be used in the remainder of this query. See
+https://www.apollographql.com/docs/react/essentials/local-state/#using-client-fields-as-variables
+"""
+directive @export(
+  """The variable name to export this field as."""
+  as: String!
+) on FIELD
+
+"""
+Specify a custom store key for this result. See
+https://www.apollographql.com/docs/react/advanced/caching/#the-connection-directive
+"""
+directive @connection(
+  """Specify the store key."""
+  key: String!
+
+  """
+  An array of query argument names to include in the generated custom store key.
+  """
+  filter: [String!]
+) on FIELD
+
+type Query {
+  me: User
+  user(input: UserAuthInput!): User
+  users: [User!]
+  sources: [Source!]
+}
+
+type User {
+  id: ID!
+  username: String!
+  sfAccessToken: String
+  tracks: [Track!]
+}
+
+type Track {
+  id: ID!
+  name: String!
+  source: Source!
+  startSec: Float
+  endSec: Float
+}
+
+union Source = SfSource | YtSource
+
+type SfSource {
+  id: ID!
+  spotifyUri: String!
+}
+
+type YtSource {
+  id: ID!
+  videoUrl: String!
+  streamUrl: String!
+}
+
+input UserAuthInput {
+  username: String!
+  password: String!
+}
+
+type Mutation {
+  register(input: UserAuthInput!): User!
+  addSfSource(input: AddSfSourceInput!): SfSource!
+  removeSfSource(input: RemoveSfSourceInput!): Boolean!
+  addYtSource(input: AddYtSourceInput!): YtSource!
+  removeYtSource(input: RemoveYtSourceInput!): Boolean!
+  addTrack(input: AddTrackInput!): Track
+  removeTrack(input: RemoveTrackInput!): Boolean!
+}
+
+input AddSfSourceInput {
+  name: String
+  spotifyUri: String!
+}
+
+input RemoveSfSourceInput {
+  id: ID!
+}
+
+input AddYtSourceInput {
+  name: String
+  videoUrl: String!
+}
+
+input RemoveYtSourceInput {
+  id: ID!
+}
+
+input AddTrackInput {
+  userId: ID!
+  name: String!
+  sourceId: ID!
+  startSec: Float
+  endSec: Float
+}
+
+input RemoveTrackInput {
+  userId: ID!
+  trackId: ID!
+}

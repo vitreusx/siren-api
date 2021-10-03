@@ -1,23 +1,23 @@
+from mongoengine import connect, Document
+from mongoengine.fields import *
 from flask import Flask
-from mongoengine import connect
 
 
 class Database:
-    def __init__(self, app: Flask = None) -> None:
-        if app is not None:
-            self.init_app(self.app)
+    def __init__(self, app: Flask = None):
+        if app:
+            self.init_app(app)
 
-    def init_app(self, app: Flask) -> None:
+    def init_app(self, app: Flask):
         self.app = app
-        host = app.config.get("DB_HOST")
-        port = app.config.get("DB_PORT")
 
         connect(
             db=app.config.get("DB_NAME"),
-            username=app.config.get("DB_USERNAME"),
+            username=app.config.get("DB_USER"),
             password=app.config.get("DB_PASSWORD"),
+            host=app.config.get("DB_HOST"),
+            port=int(app.config.get("DB_PORT")),
             authentication_source="admin",
-            host=f"mongodb://{host}:{port}",
         )
 
 

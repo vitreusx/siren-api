@@ -8,9 +8,7 @@ from urllib.parse import urlencode
 import os
 import time
 
-from spotipy import Spotify
-from spotipy.oauth2 import SpotifyOAuth
-from siren.models.sf_auth import SpotifyAuth
+from siren.models.sf_auth import SfAuth
 
 router = Blueprint("spotify", __name__)
 
@@ -65,15 +63,12 @@ def callback():
     response = requests.post(url, headers=headers, data=data).json()
     # TODO validate, check status code
 
-    auth = SpotifyAuth(
+    current_user.sf_auth = SfAuth(
         access_token=response["access_token"],
         refresh_token=response["refresh_token"],
         expires_at=int(time.time()) + response["expires_in"],
         scope=response["scope"],
     )
-    auth.save()
-
-    current_user.sf_auth = auth
     current_user.save()
 
     return redirect(session["sf_login_redirect"])

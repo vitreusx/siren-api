@@ -9,21 +9,23 @@ def create_app() -> Flask:
     app = Flask(__name__)
 
     load_dotenv()
-    app.config.from_mapping(
-        {
-            "DB_NAME": "siren",
-            "DB_USERNAME": os.getenv("MONGO_INITDB_ROOT_USERNAME"),
-            "DB_PASSWORD": os.getenv("MONGO_INITDB_ROOT_PASSWORD"),
-            "DB_HOST": "db",
-            "DB_PORT": 27017,
-            "SPOTIFY_CLIENT_ID": os.getenv("SPOTIFY_CLIENT_ID"),
-            "SPOTIFY_CLIENT_SECRET": os.getenv("SPOTIFY_CLIENT_SECRET"),
-        }
-    )
+
+    class Config:
+        DB_NAME = os.getenv("DB_NAME")
+        DB_USER = os.getenv("DB_USER")
+        DB_PASSWORD = os.getenv("DB_PASSWORD")
+        DB_HOST = os.getenv("DB_HOST")
+        DB_PORT = os.getenv("DB_PORT")
+        SPOTIFY_CLIENT_ID = os.getenv("SPOTIFY_CLIENT_ID")
+        SPOTIFY_CLIENT_SECRET = os.getenv("SPOTIFY_CLIENT_SECRET")
+
+    app.config.from_object(Config)
     app.secret_key = os.getenv("FLASK_SECRET")
 
     db.init_app(app)
+
     auth.init_app(app)
+
     app.register_blueprint(auth.router, url_prefix="/auth")
     app.register_blueprint(graphql.router, url_prefix="/graphql")
 

@@ -3,7 +3,7 @@ from werkzeug.utils import redirect
 from flask_login import LoginManager, current_user, login_user
 from flask_login.utils import login_required, logout_user
 from siren.models.db import db
-from siren.models.user_auth import UserAuth
+from siren.models.user import User, UserAuth
 from http import HTTPStatus
 
 router = Blueprint("user", __name__)
@@ -12,7 +12,7 @@ lm = LoginManager()
 
 @lm.user_loader
 def user_loader(id):
-    return UserAuth.objects.get(id=id)
+    return User.objects.get(id=id)
 
 
 @router.route("/register", methods=["POST"])
@@ -21,12 +21,11 @@ def register():
     password = request.form.get("password")
     redirect_uri = request.form.get("redirect")
 
-    matching = UserAuth.objects(username=username)
-    if len(matching) > 0:
+    if User.objects(auth__username=username).count() > 0:
         return {"error": "User already exists."}, HTTPStatus.CONFLICT
     else:
-        user = UserAuth.create(username, password)
-        user.save()
+        user_auth = UserAuth.create(username, password)
+        user = User(acct_auth=user_auth, sf_auth=None, tracks=[]).save()
         return redirect(redirect_uri)
 
 
@@ -37,11 +36,11 @@ def login():
     remember = request.form.get("remember")
     redirect_uri = request.form.get("redirect")
 
-    users = UserAuth.objects(username=username)
-    if users and users[0].verify(password):
-        login_user(users[0], remember=remember)
+    try:
+        user = User.objects(auth__username=username).get()
+        login_user(user, remember=remember)
         return redirect(redirect_uri)
-    else:
+    except:
         return {"error": "Wrong credentials."}, HTTPStatus.UNAUTHORIZED
 
 

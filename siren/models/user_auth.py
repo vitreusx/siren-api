@@ -1,19 +1,13 @@
 from __future__ import annotations
-from typing import Optional
-from mongoengine import Document
-from flask_login import UserMixin
+from mongoengine import EmbeddedDocument
+from mongoengine.fields import *
 import bcrypt
-from mongoengine.fields import StringField, ReferenceField
-from mongoengine.queryset.base import NULLIFY
-from .sf_auth import SpotifyAuth
 
 
-class UserAuth(UserMixin, Document):
-    username = StringField(max_length=64, unique=True)
-    salt = StringField(max_length=29)
-    hash = StringField(max_length=60)
-
-    sf_auth = ReferenceField(SpotifyAuth, reverse_delete_rule=NULLIFY)
+class UserAuth(EmbeddedDocument):
+    username = StringField(required=True, max_length=64, unique=True)
+    salt = StringField(required=True, max_length=29)
+    hash = StringField(required=True, max_length=60)
 
     @staticmethod
     def create(username: str, password: str) -> UserAuth:
