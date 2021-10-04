@@ -1,10 +1,10 @@
-from mongoengine import EmbeddedDocument
+from mongoengine import Document
 from mongoengine.fields import *
 from mongoengine.queryset.base import DENY
 from .source import Source
 
 
-class Track(EmbeddedDocument):
+class Track(Document):
     name = StringField(required=True)
     source = ReferenceField(Source, required=True)
     start_sec = FloatField()

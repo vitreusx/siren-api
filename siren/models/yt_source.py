@@ -23,7 +23,7 @@ class YtSource(Source):
     def _need_refetch(self):
         if self.stream_url is None:
             return True
-        elif self.expires_at is not None and self.expires_at >= datetime.now():
+        elif self.expires_at is not None and self.expires_at <= datetime.now():
             return True
         else:
             return False

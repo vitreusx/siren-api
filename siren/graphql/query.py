@@ -2,6 +2,7 @@ from graphene import *
 from .user import User
 from .source import Source
 from .user_auth_input import UserAuthInput
+from .track import Track
 from siren import models
 from flask_login import current_user
 
@@ -11,6 +12,7 @@ class Query(ObjectType):
     user = Field(User, input=NonNull(UserAuthInput))
     users = List(NonNull(User))
     sources = List(NonNull(Source))
+    tracks = List(NonNull(Track))
 
     def resolve_me(root, info) -> models.User:
         if current_user.is_authenticated:
@@ -24,3 +26,6 @@ class Query(ObjectType):
 
     def resolve_sources(root, info) -> list[models.Source]:
         return models.Source.objects
+
+    def resolve_tracks(root, info) -> list[models.Track]:
+        return models.Track.objects

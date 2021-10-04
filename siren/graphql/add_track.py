@@ -31,7 +31,8 @@ class AddTrack(Mutation):
             source=source,
             start_sec=input.start_sec,
             end_sec=input.end_sec,
-        ).save()
+        )
+        track.save()
 
         user.tracks.append(track)
         user.save()
