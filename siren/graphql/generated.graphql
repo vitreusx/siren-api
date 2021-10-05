@@ -49,20 +49,18 @@ type User {
 
 type Track {
   id: ID!
-  name: String!
+  title: String!
   source: Source!
-  startSec: Float
-  endSec: Float
 }
 
-union Source = SfSource | YtSource
+union Source = SfTrack | YtAudio
 
-type SfSource {
+type SfTrack {
   id: ID!
-  spotifyUri: String!
+  trackId: String!
 }
 
-type YtSource {
+type YtAudio {
   id: ID!
   videoUrl: String!
   streamUrl: String!
@@ -83,38 +81,22 @@ input UserAuthInput {
 
 type Mutation {
   register(input: UserAuthInput!): User!
-  addSfSource(input: AddSfSourceInput!): SfSource!
-  removeSfSource(input: RemoveSfSourceInput!): Boolean!
-  addYtSource(input: AddYtSourceInput!): YtSource!
-  removeYtSource(input: RemoveYtSourceInput!): Boolean!
-  addTrack(input: AddTrackInput!): Track
+  addSfTrack(input: AddSfTrackInput!): Track
+  addYtTrack(input: AddYtTrackInput!): Track
   removeTrack(input: RemoveTrackInput!): Boolean!
+  clearAll: Boolean!
 }
 
-input AddSfSourceInput {
-  name: String
-  spotifyUri: String!
-}
-
-input RemoveSfSourceInput {
-  id: ID!
-}
-
-input AddYtSourceInput {
-  name: String
-  videoUrl: String!
-}
-
-input RemoveYtSourceInput {
-  id: ID!
-}
-
-input AddTrackInput {
+input AddSfTrackInput {
   userId: ID!
-  name: String!
-  sourceId: ID!
-  startSec: Float
-  endSec: Float
+  title: String!
+  trackLink: String!
+}
+
+input AddYtTrackInput {
+  userId: ID!
+  title: String!
+  videoUrl: String!
 }
 
 input RemoveTrackInput {

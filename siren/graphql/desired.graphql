@@ -1,0 +1,64 @@
+type Query {
+  me: User
+  user(input: UserAuthInput!): User
+  users: [User!]
+  sources: [Source!]
+  tracks: [Track!]
+}
+
+type User {
+  id: ID!
+  username: String!
+  sfAccessToken: String
+  tracks: [Track!]
+}
+
+type Track {
+  id: ID!
+  title: String!
+  source: Source!
+}
+
+union Source = SfTrack | YtAudio
+
+type SfTrack {
+  id: ID!
+  trackId: String!
+}
+
+type YtAudio {
+  id: ID!
+  videoUrl: String!
+  streamUrl: String!
+  expiresAt: Date!
+}
+
+type UserAuthInput {
+  username: String!
+  password: String!
+}
+
+type Mutation {
+  register(input: UserAuthInput!): User
+  addSfTrack(input: AddSfTrackInput!): Track
+  addYtTrack(input: AddYtTrackInput!): Track
+  removeTrack(input: RemoveTrackInput!): Boolean!
+  clearAll: Boolean!
+}
+
+input AddSfTrackInput {
+  userId: ID!
+  title: String!
+  trackLink: String!
+}
+
+input AddYtTrackInput {
+  userId: ID!
+  title: String!
+  videoUrl: String!
+}
+
+input RemoveTrackInput {
+  userId: ID!
+  trackId: ID!
+}

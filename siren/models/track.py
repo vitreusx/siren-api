@@ -5,7 +5,5 @@ from .source import Source
 
 
 class Track(Document):
-    name = StringField(required=True)
+    title = StringField(required=True)
     source = ReferenceField(Source, required=True)
-    start_sec = FloatField()
-    end_sec = FloatField()

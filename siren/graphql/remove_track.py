@@ -18,7 +18,7 @@ class RemoveTrack(Mutation):
         if user is None:
             return False
 
-        track = models.Track.objects(id=input.id).first()
+        track = models.Track.objects(id=input.track_id).first()
         if track is None:
             return False
 

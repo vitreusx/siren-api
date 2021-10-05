@@ -6,9 +6,8 @@ from datetime import datetime
 from urllib.parse import urlparse, parse_qs
 
 
-class YtSource(Source):
-    name = StringField(required=True)
-    video_url = URLField(required=True)
+class YtAudio(Source):
+    video_url = URLField(required=True, unique=True)
     stream_url = URLField()
     expires_at = DateTimeField()
 
@@ -16,7 +15,7 @@ class YtSource(Source):
 
     @staticmethod
     def video_title(video_url: str) -> str:
-        with YoutubeDL(YtSource._opts) as ydl:
+        with YoutubeDL(YtAudio._opts) as ydl:
             info = ydl.extract_info(video_url, download=False)
             return info["title"]
 
@@ -30,7 +29,7 @@ class YtSource(Source):
 
     def refetch_stream(self):
         if self._need_refetch():
-            with YoutubeDL(YtSource._opts) as ydl:
+            with YoutubeDL(YtAudio._opts) as ydl:
                 info = ydl.extract_info(self.video_url, download=False)
 
                 bestaudio = max(info["formats"], key=lambda fmt: fmt.get("abr", 0))

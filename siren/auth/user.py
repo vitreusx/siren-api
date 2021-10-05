@@ -12,7 +12,7 @@ lm = LoginManager()
 
 @lm.user_loader
 def user_loader(id):
-    return User.objects.get(id=id)
+    return User.objects(id=id).first()
 
 
 @router.route("/register", methods=["POST"])
@@ -25,7 +25,7 @@ def register():
         return {"error": "User already exists."}, HTTPStatus.CONFLICT
     else:
         user_auth = UserAuth.create(username, password)
-        user = User(acct_auth=user_auth, sf_auth=None, tracks=[]).save()
+        user = User(auth=user_auth, tracks=[]).save()
         return redirect(redirect_uri)
 
 
@@ -36,11 +36,11 @@ def login():
     remember = request.form.get("remember")
     redirect_uri = request.form.get("redirect")
 
-    try:
-        user = User.objects(auth__username=username).get()
+    user: User = User.objects(auth__username=username).first()
+    if user and user.auth and user.auth.verify(password):
         login_user(user, remember=remember)
         return redirect(redirect_uri)
-    except:
+    else:
         return {"error": "Wrong credentials."}, HTTPStatus.UNAUTHORIZED
 
 

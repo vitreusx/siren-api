@@ -1,18 +1,14 @@
 import graphene
 from .register import Register
-from .add_sf_source import AddSfSource
-from .remove_sf_source import RemoveSfSource
-from .add_yt_source import AddYtSource
-from .remove_yt_source import RemoveYtSource
-from .add_track import AddTrack
+from .add_sf_track import AddSfTrack
+from .add_yt_track import AddYtTrack
 from .remove_track import RemoveTrack
+from .clear_all import ClearAll
 
 
 class Mutation(graphene.ObjectType):
     register = Register.Field()
-    add_sf_source = AddSfSource.Field()
-    remove_sf_source = RemoveSfSource.Field()
-    add_yt_source = AddYtSource.Field()
-    remove_yt_source = RemoveYtSource.Field()
-    add_track = AddTrack.Field()
+    add_sf_track = AddSfTrack.Field()
+    add_yt_track = AddYtTrack.Field()
     remove_track = RemoveTrack.Field()
+    clear_all = ClearAll.Field()
