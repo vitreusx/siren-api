@@ -14,13 +14,9 @@ class RemoveTrack(Mutation):
     Output = NonNull(Boolean)
 
     def mutate(root, info, input: RemoveTrackInput):
-        user = models.User.objects(id=input.user_id).first()
-        if user is None:
+        query_set = models.User.objects(id=input.user_id)
+        if not query_set.first():
             return False
 
-        track = models.Track.objects(id=input.track_id).first()
-        if track is None:
-            return False
-
-        track.delete()
-        return True
+        num_updated = query_set.update_one(pull__tracks__id=input.track_id)
+        return num_updated > 0

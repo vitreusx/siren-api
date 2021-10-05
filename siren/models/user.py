@@ -9,4 +9,4 @@ from .track import Track
 class User(Document, UserMixin):
     auth = EmbeddedDocumentField(UserAuth, required=True)
     sf_auth = EmbeddedDocumentField(SfAuth)
-    tracks = ListField(ReferenceField(Track), default=list)
+    tracks = EmbeddedDocumentListField(Track)

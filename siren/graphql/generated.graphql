@@ -64,15 +64,7 @@ type YtAudio {
   id: ID!
   videoUrl: String!
   streamUrl: String!
-  expiresAt: Date!
 }
-
-"""
-The `Date` scalar type represents a Date
-value as specified by
-[iso8601](https://en.wikipedia.org/wiki/ISO_8601).
-"""
-scalar Date
 
 input UserAuthInput {
   username: String!

@@ -34,9 +34,7 @@ class AddSfTrack(Mutation):
             return
 
         source = AddSfTrack.get_source_model(input.track_link)
-        track = models.Track(title=input.title, source=source).save()
-
-        user.tracks.append(track)
+        track = user.tracks.create(title=input.title, source=source)
         user.save()
 
         return track
