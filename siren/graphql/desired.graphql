@@ -11,6 +11,7 @@ type User {
   username: String!
   sfAccessToken: String
   tracks: [Track!]
+  track(id: ID!): Track
 }
 
 type Track {
@@ -30,7 +31,6 @@ type YtAudio {
   id: ID!
   videoUrl: String!
   streamUrl: String!
-  expiresAt: Date!
 }
 
 type UserAuthInput {

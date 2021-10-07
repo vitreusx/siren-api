@@ -8,6 +8,7 @@ from urllib.parse import urlencode
 import os
 import time
 
+from siren import models
 from siren.models.sf_auth import SfAuth
 
 router = Blueprint("spotify", __name__)
@@ -23,6 +24,8 @@ def login():
         "user-modify-playback-state",
         "user-read-currently-playing",
         "user-library-read",
+        "user-read-email",
+        "user-read-private",
     ]
     state = secrets.token_urlsafe(32)  # TODO save it for later checking
     redirect_uri = f"http://localhost:8000{url_for('.callback')}"
@@ -77,6 +80,7 @@ def callback():
 @router.route("/logout", methods=["POST"])
 @login_required
 def logout():
-    current_user.sf_auth.delete()
+    user = models.User.objects(id=current_user.id)
+    user.update_one(unset__sf_auth=True)
     current_user.save()
     return redirect(request.form.get("redirect"))

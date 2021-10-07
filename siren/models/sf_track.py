@@ -3,4 +3,4 @@ from mongoengine.fields import *
 
 
 class SfTrack(Source):
-    track_id = StringField(required=True, unique=True)
+    track_id = StringField(required=True)

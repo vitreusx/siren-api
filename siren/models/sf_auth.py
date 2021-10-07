@@ -4,7 +4,8 @@ from mongoengine.fields import *
 from spotipy import Spotify
 from spotipy.oauth2 import CacheHandler, SpotifyOAuth
 from flask import url_for, current_app
-import os
+from bson import ObjectId
+from datetime import datetime
 
 
 class SfAuthCache(CacheHandler):
@@ -20,7 +21,6 @@ class SfAuthCache(CacheHandler):
         self.sf_auth.refresh_token = token_info["refresh_token"]
         self.sf_auth.expires_at = token_info["expires_at"]
         self.sf_auth.scope = token_info["scope"]
-        self.sf_auth.save()
 
 
 class SfAuth(EmbeddedDocument):
@@ -28,6 +28,11 @@ class SfAuth(EmbeddedDocument):
     refresh_token = StringField(required=True)
     expires_at = IntField(required=True)
     scope = StringField(required=True)
+
+    def _refresh(self):
+        expires = datetime.fromtimestamp(float(self.expires_at))
+        if expires <= datetime.now():
+            self.client.auth_manager.get_access_token()
 
     @property
     def token_info(self):
@@ -41,7 +46,7 @@ class SfAuth(EmbeddedDocument):
     @property
     def client(self):
         oauth = SpotifyOAuth(
-            redirect_uri=url_for("api.spotify.callback"),
+            redirect_uri=url_for("auth.spotify.callback"),
             cache_handler=SfAuthCache(self),
             scope="user-library-read",
             client_id=current_app.config.get("SPOTIFY_CLIENT_ID"),

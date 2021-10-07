@@ -14,9 +14,9 @@ class RemoveTrack(Mutation):
     Output = NonNull(Boolean)
 
     def mutate(root, info, input: RemoveTrackInput):
-        query_set = models.User.objects(id=input.user_id)
-        if not query_set.first():
+        user_qs = models.User.objects(id=input.user_id)
+        if not user_qs.first():
             return False
 
-        num_updated = query_set.update_one(pull__tracks__id=input.track_id)
+        num_updated = user_qs.update_one(pull__tracks__id=input.track_id)
         return num_updated > 0

@@ -7,7 +7,7 @@ from urllib.parse import urlparse, parse_qs
 
 
 class YtAudio(Source):
-    video_url = URLField(required=True, unique=True)
+    video_url = URLField(required=True)
     stream_url = URLField()
     expires_at = DateTimeField()
 

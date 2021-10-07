@@ -19,6 +19,8 @@ class User(ObjectType):
         if not root.sf_auth:
             return None
         else:
+            root.sf_auth._refresh()
+            root.save()
             return root.sf_auth.access_token
 
     def resolve_tracks(root: models.User, info):
