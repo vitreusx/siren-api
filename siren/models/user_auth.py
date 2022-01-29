@@ -5,7 +5,7 @@ import bcrypt
 
 
 class UserAuth(EmbeddedDocument):
-    username = StringField(required=True, max_length=64, unique=True)
+    username = StringField(required=True, max_length=64)
     salt = StringField(required=True, max_length=29)
     hash = StringField(required=True, max_length=60)
 

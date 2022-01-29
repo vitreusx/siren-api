@@ -9,7 +9,6 @@ class Track(EmbeddedDocument):
     id = ObjectIdField(
         required=True,
         default=ObjectId,
-        unique=True,
     )
     title = StringField(required=True)
     source = ReferenceField(Source, required=True)

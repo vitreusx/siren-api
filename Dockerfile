@@ -1,7 +1,5 @@
 FROM python:3.9.7-slim-buster
 
-EXPOSE 5000
-
 ENV PYTHONDONTWRITEBYTECODE=1
 ENV PYTHONUNBUFFERED=1
 
@@ -15,7 +13,6 @@ COPY requirements.txt .
 RUN pip install -U pip
 RUN pip install -r requirements.txt
 
-ENV PYTHONPATH="${PYTHONPATH}:/app"
-
+COPY siren ./siren
 ENV FLASK_ENV=development
 CMD python -m siren
