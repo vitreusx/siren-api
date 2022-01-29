@@ -27,7 +27,8 @@ def login():
         "user-read-email",
         "user-read-private",
     ]
-    state = secrets.token_urlsafe(32)  # TODO save it for later checking
+    state = secrets.token_urlsafe(32)
+    session["state"] = state
     redirect_uri = f"http://localhost:8000{url_for('.callback')}"
     session["sf_login_redirect"] = request.form.get("redirect")
 
@@ -49,6 +50,11 @@ def login():
 @login_required
 def callback():
     code = request.args.get("code")
+    state = request.args.get("state")
+
+    if state != session.get("state"):
+        return "State token doesn't match!", 500
+
     redirect_uri = f"http://localhost:8000{url_for('.callback')}"
     data = {
         "code": code,
