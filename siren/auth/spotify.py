@@ -31,6 +31,7 @@ def login():
     session["state"] = state
     redirect_uri = f"{request.form.get('server_url')}{url_for('.callback')}"
     session["sf_redirect_uri"] = redirect_uri
+    session["sf_login_redirect"] = request.form.get("redirect")
 
     params = {
         "response_type": "code",
