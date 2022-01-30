@@ -40,9 +40,7 @@ def login():
         "state": state,
     }
     url = f"https://accounts.spotify.com/authorize/?{urlencode(params)}"
-
-    # TODO finish it tomorrow; /callback should redirect to the original page,
-    # this particular request is actually fairly regular in that regard
+    
     return redirect(url)
 
 
