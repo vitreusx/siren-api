@@ -29,7 +29,7 @@ def create_app() -> Flask:
     db.init_app(app)
     auth.init_app(app)
 
-    cors = CORS(app)
+    cors = CORS(app=app, supports_credentials=True)
     app.config['CORS_HEADERS'] = 'Content-Type'
 
     app.register_blueprint(auth.router, url_prefix="/auth")

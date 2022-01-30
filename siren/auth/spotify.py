@@ -29,8 +29,8 @@ def login():
     ]
     state = secrets.token_urlsafe(32)
     session["state"] = state
-    redirect_uri = f"http://localhost:8000{url_for('.callback')}"
-    session["sf_login_redirect"] = request.form.get("redirect")
+    redirect_uri = f"{request.form.get('server_url')}{url_for('.callback')}"
+    session["sf_redirect_uri"] = redirect_uri
 
     params = {
         "response_type": "code",
@@ -55,7 +55,9 @@ def callback():
     if state != session.get("state"):
         return "State token doesn't match!", 500
 
-    redirect_uri = f"http://localhost:8000{url_for('.callback')}"
+    redirect_uri = session.get("sf_redirect_uri")
+    print(f"redirect_uri = {redirect_uri}")
+
     data = {
         "code": code,
         "redirect_uri": redirect_uri,
@@ -70,6 +72,8 @@ def callback():
 
     url = "https://accounts.spotify.com/api/token"
     response = requests.post(url, headers=headers, data=data).json()
+    print(f"response = {response}")
+
     # TODO validate, check status code
 
     current_user.sf_auth = SfAuth(
